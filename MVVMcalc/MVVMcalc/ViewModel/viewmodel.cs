@@ -20,9 +20,8 @@ namespace MVVMcalc.View
 
         public string CurrentEntry
         {
+            set { SetProperty(ref currentEntry, value); }
             get { return currentEntry; }
-            private set { SetProperty(ref currentEntry, value); }
-
         }
 
         public string HistoryString
@@ -30,6 +29,25 @@ namespace MVVMcalc.View
             get { return historyString; }
             private set { SetProperty(ref historyString, value); }
 
+        }
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Object.Equals(storage, value))
+            {
+                return false;
+            }
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+
+            }
         }
 
         public ICommand ClearCommand { private set; get; }
